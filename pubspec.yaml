@@ -1,0 +1,26 @@
+name: roster_system
+description: "A new Flutter project."
+publish_to: "none"
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.6
+  colornames:
+  package_info_plus: ^8.0.0
+  uuid: ^4.4.0
+  path_provider: ^2.1.5
+  flutter_native_splash: ^2.4.1
+  states_rebuilder: ^6.4.0
+  path: ^1.9.0
+  forui: ^0.8.0
+  drift: ^2.24.0
+  drift_flutter: ^0.2.4
+  drift_dev: ^2.24.0
+  build_runner: ^2.4.14
+
+flutter:
+  uses-material-design: true
