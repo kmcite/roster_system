@@ -9,34 +9,37 @@ import 'package:roster_system/ui/rosters/cell.dart';
 import 'package:roster_system/ui/rosters/duty_assignement_dialog.dart';
 import '../../domain/models/roster.dart';
 
-mixin class RosterBloc {
-  final hasChangesRM = RM.inject(() => false);
+class RosterBloc extends Bloc {
+  late RostersRepository rostersRepository = depend();
+  late RosterEntriesRepository rosterEntriesRepository = depend();
+
+  late final hasChangesRM = local(() => false);
   // Iterable<Staff> get staffs => staffsRepository.getAll();
-  Roster roster([a]) => throw '';
+  Roster roster([a]) => Roster();
   void deleteRoster() {
     rostersRepository.remove(roster().id);
     navigator.back();
   }
 
-  bool get hasChanges => hasChangesRM.state;
+  bool get hasChanges => hasChangesRM();
 
   String name([String? value]) {
     if (value != null) {
       roster(roster()..name = value);
-      hasChangesRM.state = true;
+      hasChangesRM(true);
     }
     return roster().name;
   }
 
   void saveRoster() {
     rostersRepository.put(roster());
-    hasChangesRM.state = false;
+    hasChangesRM(false);
   }
 
   void assignStaffToRosterEntry(RosterEntry entry, Staff? staff) {
     entry.staff.target = staff;
     rosterEntriesRepository.put(entry);
-    hasChangesRM.state = false;
+    hasChangesRM(false);
   }
 
   String cell(Day day, Shift shift) {
@@ -45,38 +48,41 @@ mixin class RosterBloc {
   }
 }
 
-class RosterPage extends UI with RosterBloc {
+class RosterPage extends UI<RosterBloc> {
+  @override
+  RosterBloc create() => RosterBloc();
+
   RosterPage({super.key});
   @override
-  Widget build(BuildContext context) {
+  Widget build(context) {
     return FScaffold(
       header: FHeader.nested(
-        title: roster().name.text(),
-        prefixActions: [
+        title: context.roster().name.text(),
+        prefixes: [
           FButton.icon(
             onPress: navigator.back,
-            child: FIcon(FAssets.icons.arrowLeft),
+            child: Icon(FIcons.arrowLeft),
           ),
         ],
-        suffixActions: [
+        suffixes: [
           FButton.icon(
-            child: FIcon(FAssets.icons.save),
-            style: FButtonStyle.primary,
-            onPress: hasChanges ? saveRoster : null,
+            child: Icon(FIcons.save),
+            style: FButtonStyle.primary(),
+            onPress: context.hasChanges ? context.saveRoster : null,
           ),
           FButton.icon(
-            child: FIcon(FAssets.icons.delete),
-            style: FButtonStyle.destructive,
-            onPress: deleteRoster,
+            child: Icon(FIcons.delete),
+            style: FButtonStyle.destructive(),
+            onPress: context.deleteRoster,
           ),
         ],
       ),
-      content: Column(
+      child: Column(
         children: [
           FTextField(
-            key: Key(roster().id.toString()),
-            initialValue: name(),
-            onChange: name,
+            key: Key(context.roster().id.toString()),
+            initialText: context.name(),
+            onChange: context.name,
           ).pad(),
 
           /// header row
@@ -84,7 +90,7 @@ class RosterPage extends UI with RosterBloc {
             children: [
               Expanded(
                 flex: 2,
-                child: FAvatar.raw(child: FIcon(FAssets.icons.clock)),
+                child: FAvatar.raw(child: Icon(FIcons.clock)),
               ),
               for (final shift in Shift.values)
                 Expanded(
@@ -101,16 +107,16 @@ class RosterPage extends UI with RosterBloc {
                 /// first column
                 Expanded(
                   flex: 2,
-                  child: FAvatar.raw(child: Cell(day.code)).pad(all: 4),
+                  child: FAvatar.raw(child: Cell(day.code)).pad(),
                 ),
                 for (final shift in Shift.values)
                   Expanded(
                     flex: 3,
                     child: Cell(
-                      cell(day, shift),
+                      context.cell(day, shift),
                       onPressed: () async {
                         RosterEntry? entryFrom(Day day, Shift shift) {
-                          return roster().entries.where(
+                          return context.roster().entries.where(
                             (entry) {
                               return entry.day == day && entry.shift == shift;
                             },
@@ -122,14 +128,14 @@ class RosterPage extends UI with RosterBloc {
                           final staff = await navigator.dialog<Staff>(
                             DutyAssignementDialog(entry),
                           );
-                          if (staff?.id == entry.staff.targetId) {
-                            assignStaffToRosterEntry(entry, null);
+                          if (staff?.id == entry.staff.target?.id) {
+                            context.assignStaffToRosterEntry(entry, null);
                           } else {
-                            assignStaffToRosterEntry(entry, staff);
+                            context.assignStaffToRosterEntry(entry, staff);
                           }
                         }
-                        hasChangesRM.state = true;
-                        hasChangesRM.state = false;
+                        context.hasChangesRM(true);
+                        context.hasChangesRM(false);
                       },
                     ),
                   ),

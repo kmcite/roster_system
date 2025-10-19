@@ -1,24 +1,33 @@
-import 'package:manager/dark/dark_repository.dart';
+import 'package:roster_system/domain/api/settings_repository.dart';
+
 import '../../main.dart';
 
-void toggle() => darkRepository.state = !dark;
-bool get dark => darkRepository.state;
+class SettingsBloc extends Bloc {
+  late final SettingsRepository settingsRepository = depend();
+  void toggle() {
+    settingsRepository.toggle();
+  }
 
-class SettingsPage extends UI {
+  late final dark = global(settingsRepository.dark);
+}
+
+class SettingsPage extends UI<SettingsBloc> {
   const SettingsPage({super.key});
+  @override
+  SettingsBloc create() => SettingsBloc();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(context) {
     return FScaffold(
       header: FHeader(
         title: 'Settings'.text(),
       ),
-      content: ListView(
+      child: ListView(
         children: [
           FButton(
-            onPress: toggle,
-            label: FIcon(
-              dark ? FAssets.icons.moon : FAssets.icons.sun,
+            onPress: context.toggle,
+            child: Icon(
+              context.dark() ? FIcons.moon : FIcons.sun,
               size: 48,
             ).pad(),
           ).pad(),

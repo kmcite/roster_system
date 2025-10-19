@@ -3,11 +3,9 @@ import 'package:roster_system/domain/models/day.dart';
 import 'package:roster_system/domain/models/roster.dart';
 import 'package:roster_system/domain/models/shift.dart';
 import 'package:roster_system/domain/models/staff.dart';
-import 'package:roster_system/main.dart';
 
 @Entity()
-class RosterEntry extends Model {
-  @Id()
+class RosterEntry {
   int id = 0;
   final staff = ToOne<Staff>(); // one staff per entry
   final roster = ToOne<Roster>(); //

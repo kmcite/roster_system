@@ -1,7 +1,4 @@
 import 'package:roster_system/domain/models/roster.dart';
+import 'package:roster_system/main.dart';
 
-import '../../main.dart';
-
-final rostersRepository = RostersRepository();
-
-class RostersRepository extends CRUD<Roster> {}
+class RostersRepository extends Repository<Roster> {}

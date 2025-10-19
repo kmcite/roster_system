@@ -2,27 +2,35 @@ import 'package:roster_system/domain/api/staffs_repository.dart';
 import 'package:roster_system/domain/models/staff.dart';
 import 'package:roster_system/main.dart';
 
-mixin NewStaffBloc {
-  final staffRM = RM.inject<Staff?>(() => null);
+class NewStaffBloc extends Bloc {
+  /// DEPENDENCIES
+  StaffsRepository staffsRepository = depend();
 
-  Staff? staff([Staff? value, bool notify = false]) {
-    if (value != null || notify) {
-      staffRM
-        ..state = value
-        ..notify();
-    }
-    return staffRM.state;
+  /// LOCAL STATE
+  late final staff = local<Staff?>(() => null);
+  String get staffName => staff()?.name ?? '';
+  bool get isStaffNotCreated => staff() == null;
+
+  /// INITIALIZER
+  @override
+  void initState() {
+    super.initState();
+    create();
   }
 
-  String name([String? value]) {
-    if (value != null) {
-      staff(staff()?..name = value);
-    }
-    return staff()?.name ?? '';
+  /// MUTATIONS
+  void onNameChanged(String? value) {
+    staff.set(staff()?..name = value ?? '');
   }
 
+  /// initState -> hooker
+  void create() {
+    staff.set(Staff());
+  }
+
+  /// BUTTON ACTIONS
   void cancel() {
-    staff(null, true);
+    staff.set(null);
     navigator.back();
   }
 
@@ -32,40 +40,39 @@ mixin NewStaffBloc {
     }
     cancel();
   }
-
-  void create() => staff(Staff());
 }
 
-class NewStaffDialog extends UI with NewStaffBloc {
+class NewStaffDialog extends UI<NewStaffBloc> {
   @override
-  Widget build(BuildContext context) {
+  NewStaffBloc create() => NewStaffBloc();
+
+  @override
+  Widget build(context) {
     return FDialog(
       title: 'New Staff'.text(),
       body: Column(
         children: [
-          staff() == null
+          context.isStaffNotCreated
               ? FButton.icon(
-                  onPress: create,
-                  child: FIcon(FAssets.icons.plus),
+                  onPress: context.create,
+                  child: Icon(FIcons.plus),
                 )
               : FTextField(
                   label: 'Name'.text(),
-                  initialValue: staff()?.name,
-                  onChange: (value) {
-                    staff(staff()!..name = value);
-                  },
+                  initialText: context.staffName,
+                  onChange: context.onNameChanged,
                 ),
         ],
       ),
       direction: Axis.horizontal,
       actions: [
         FButton(
-          onPress: staff()?.name.isEmpty ?? true ? null : save,
-          label: 'Save'.text(),
+          onPress: context.staffName.isEmpty ? null : context.save,
+          child: 'Save'.text(),
         ),
         FButton(
-          onPress: cancel,
-          label: 'Cancel'.text(),
+          onPress: context.cancel,
+          child: 'Cancel'.text(),
         ),
       ],
     );

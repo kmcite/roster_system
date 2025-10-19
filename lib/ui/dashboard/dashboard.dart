@@ -9,11 +9,11 @@ enum NavigationTargets {
   rosters,
   settings;
 
-  SvgAsset get icon {
+  IconData get icon {
     return switch (this) {
-      NavigationTargets.staffs => FAssets.icons.dock,
-      NavigationTargets.rosters => FAssets.icons.hardDrive,
-      NavigationTargets.settings => FAssets.icons.settings,
+      NavigationTargets.staffs => FIcons.dock,
+      NavigationTargets.rosters => FIcons.hardDrive,
+      NavigationTargets.settings => FIcons.settings,
     };
   }
 
@@ -26,35 +26,32 @@ enum NavigationTargets {
   }
 }
 
-mixin DashboardPageBloc {
-  final indexRM = RM.inject<int>(
-    () => 0,
-    persist: () => PersistState(key: 'index'),
-  );
-  int index([int? value]) {
-    if (value != null) {
-      indexRM.state = value;
-    }
-    return indexRM.state;
+class DashboardPageBloc extends Bloc {
+  late final index = local(() => 0);
+
+  void onIndexChanged(int index) {
+    this.index(index);
   }
 }
 
-class DashboardPage extends UI with DashboardPageBloc {
+class DashboardPage extends UI<DashboardPageBloc> {
   DashboardPage({super.key});
+  @override
+  DashboardPageBloc create() => DashboardPageBloc();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(context) {
     return FScaffold(
-      contentPad: false,
-      content: NavigationTargets.values.elementAt(index()).page,
+      childPad: false,
+      child: NavigationTargets.values.elementAt(context.index()).page,
       footer: FBottomNavigationBar(
-        index: index(),
-        onChange: index,
+        index: context.index(),
+        onChange: context.onIndexChanged,
         children: [
           ...NavigationTargets.values.map(
             (target) {
               return FBottomNavigationBarItem(
-                icon: FIcon(target.icon),
+                icon: Icon(target.icon),
                 label: target.name.text(),
               );
             },

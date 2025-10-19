@@ -4,9 +4,11 @@ import 'package:roster_system/ui/rosters/roster_page.dart';
 import '../../main.dart';
 import '../../domain/models/roster.dart';
 
-mixin RostersBloc {
+class RostersBloc extends Bloc {
+  late RostersRepository rostersRepository = depend();
+
   Iterable<Roster> get rosters => rostersRepository.getAll();
-  void put(Roster roster) {
+  void putRoster(Roster roster) {
     rostersRepository.put(roster);
   }
 
@@ -16,32 +18,33 @@ mixin RostersBloc {
   }
 }
 
-class RostersPage extends UI with RostersBloc {
+class RostersPage extends UI<RostersBloc> {
+  RostersBloc create() => RostersBloc();
   @override
-  Widget build(BuildContext context) {
+  Widget build(context) {
     return FScaffold(
       header: FHeader(
         title: Text('Rosters'),
-        actions: [
+        suffixes: [
           FHeaderAction(
-            icon: FIcon(FAssets.icons.plus),
+            icon: Icon(FIcons.plus),
             onPress: () {
-              put(
+              context.putRoster(
                 Roster()..generateEntries(),
               );
             },
           ),
         ],
       ),
-      content: ListView.builder(
-        itemCount: rosters.length,
-        itemBuilder: (context, index) {
-          final roster = rosters.elementAt(index);
+      child: ListView.builder(
+        itemCount: context.rosters.length,
+        itemBuilder: (_, index) {
+          final roster = context.rosters.elementAt(index);
           return FTile(
             title: Text(roster.name),
             subtitle: roster.entries.length.text(),
             onPress: () {
-              details(roster);
+              context.details(roster);
               // navigator.to(DevRosterPage(roster));
             },
           );
@@ -51,11 +54,12 @@ class RostersPage extends UI with RostersBloc {
   }
 }
 
-class DevRosterPage extends UI with DevRosterBloc {
+class DevRosterPage extends UI<DevRosterBloc> {
+  DevRosterBloc create() => DevRosterBloc();
   const DevRosterPage(this.roster);
   final Roster roster;
   @override
-  Widget build(BuildContext context) {
+  Widget build(context) {
     return Scaffold(
       body: roster.text(),
       floatingActionButton: FloatingActionButton(
@@ -65,15 +69,19 @@ class DevRosterPage extends UI with DevRosterBloc {
   }
 }
 
-mixin class DevRosterBloc {
-  put(Roster roster) {
+class DevRosterBloc extends Bloc {
+  late RostersRepository rostersRepository = depend();
+
+  void putRoster(Roster roster) {
     rostersRepository.put(roster);
   }
 }
 
-class Devlog extends UI {
+class Devlog extends UI<DevRosterBloc> {
   @override
-  Widget build(BuildContext context) {
+  DevRosterBloc create() => DevRosterBloc();
+  @override
+  Widget build(context) {
     return Dialog(
       child: ElevatedButton(
         onPressed: () {

@@ -17,9 +17,9 @@ extension ShiftExtensions on Shift {
 
   Widget get icon {
     return switch (this) {
-      Shift.morning => FIcon(FAssets.icons.sun, color: Colors.yellow),
-      Shift.evening => FIcon(FAssets.icons.cloudSun, color: Colors.deepOrange),
-      Shift.night => FIcon(FAssets.icons.moon, color: Colors.indigo),
+      Shift.morning => Icon(FIcons.sun, color: Colors.yellow),
+      Shift.evening => Icon(FIcons.cloudSun, color: Colors.deepOrange),
+      Shift.night => Icon(FIcons.moon, color: Colors.indigo),
     };
   }
 

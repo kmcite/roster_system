@@ -2,14 +2,11 @@ import 'package:objectbox/objectbox.dart';
 import 'package:roster_system/domain/models/roster_entry.dart';
 import 'package:roster_system/domain/models/day.dart';
 import 'package:roster_system/domain/models/shift.dart';
-import 'package:roster_system/main.dart';
 
 @Entity()
-class Roster extends Model {
-  @Id()
+class Roster {
   int id = 0;
   String name = '';
-  @Backlink('roster')
   final entries = ToMany<RosterEntry>();
 
   @override
@@ -19,7 +16,8 @@ class Roster extends Model {
     buffer.writeln('Entries:');
     for (final entry in entries) {
       buffer.writeln(
-          '${entry.day.name}, ${entry.shift.name}, ${entry.staff.target?.name ?? 'X'}');
+        '${entry.day.name}, ${entry.shift.name}, ${entry.staff.target?.name}',
+      );
     }
     return buffer.toString();
   }

@@ -1,6 +1,6 @@
 import 'package:roster_system/main.dart';
 
-class Cell extends UI {
+class Cell extends StatelessWidget {
   final String data;
 
   final VoidCallback? onPressed;
@@ -12,9 +12,10 @@ class Cell extends UI {
   @override
   Widget build(BuildContext context) {
     return FTooltip(
-      tipBuilder: (_, __, ___) => data.text(),
+      tipBuilder: (_, __) => Text(data),
       child: FTappable(
-        child: data.text(
+        child: Text(
+          data,
           overflow: TextOverflow.ellipsis,
           textAlign: TextAlign.center,
         ),

@@ -5,16 +5,18 @@ import 'package:roster_system/ui/staffs/staff_page.dart';
 import 'package:roster_system/domain/api/staffs_repository.dart';
 import '../../main.dart';
 
-mixin class StaffsBloc {
-  Iterable<Staff> get staffs => staffsRepository.getAll();
+class StaffsBloc extends Bloc {
+  /// REPOSITORIES
+  late StaffsRepository staffsRepository = depend();
 
-  void put(Staff staff) {
-    staffsRepository.put(staff);
-  }
+  /// GLOBAL STATE
+  Iterable<Staff> get staffs => staffsRepository.staffs;
+  Staff? staff(int id) => staffsRepository.get(id);
 
-  void remove(int id) {
-    staffsRepository.remove(id);
-  }
+  /// MUTATIONS
+  void put(Staff staff) => staffsRepository.put(staff);
+
+  void remove(int id) => staffsRepository.remove(id);
 
   int getStaffHours(int id) {
     final staff = staffsRepository.get(id);
@@ -24,45 +26,46 @@ mixin class StaffsBloc {
     final hours = staff.entries.map((entry) => entry.shift.hours);
     return hours.fold(0, (initialValue, combine) => initialValue + combine);
   }
-
-  void staffDetails(Staff staff) {
-    // staffsRepository.item(staff);
-    navigator.to(StaffPage());
-  }
 }
 
-class StaffsPage extends UI with StaffsBloc {
+class StaffsPage extends UI<StaffsBloc> {
   const StaffsPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  StaffsBloc create() => StaffsBloc();
+
+  @override
+  Widget build(context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         FHeader(
           title: 'Staffs'.text(),
-          actions: [
+          suffixes: [
             FButton.icon(
-              onPress: () {
-                navigator.dialog(NewStaffDialog());
-              },
-              child: FIcon(FAssets.icons.plus),
+              onPress: () => navigator.dialog(NewStaffDialog()),
+              child: Icon(FIcons.plus),
             ),
           ],
         ),
-        FTileGroup.builder(
-          divider: FTileDivider.full,
-          count: staffs.length,
-          tileBuilder: (context, index) {
-            final staff = staffs.elementAt(index);
-            return FTile(
-              title: staff.name.text(),
-              onPress: () {
-                staffDetails(staff);
-              },
-            );
-          },
-        ).pad(),
+        context.staffs.isEmpty
+            ? Text(
+                'No staffs',
+                // description: 'Add a staff to get started',
+              )
+            : FTileGroup.builder(
+                divider: FItemDivider.full,
+                count: context.staffs.length,
+                tileBuilder: (_, index) {
+                  final staff = context.staffs.elementAt(index);
+                  return FTile(
+                    title: staff.name.text(),
+                    onPress: () {
+                      navigator.to(StaffPage(staff: staff));
+                    },
+                  );
+                },
+              ).pad(),
       ],
     );
   }

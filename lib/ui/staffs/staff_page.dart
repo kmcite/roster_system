@@ -2,77 +2,109 @@ import 'package:roster_system/domain/models/staff.dart';
 import 'package:roster_system/main.dart';
 import 'package:roster_system/domain/api/staffs_repository.dart';
 
-mixin class StaffBloc {
-  Staff staff([a]) {
-    throw '';
+class StaffBloc extends Bloc {
+  late StaffsRepository staffsRepository = depend();
+
+  /// dependent state
+  final Staff _staff;
+  StaffBloc(this._staff);
+
+  late final editing = global(staffsRepository.editing);
+  Iterable<Staff> get staffs => (staffsRepository.staffs);
+
+  /// current staff being shown in ui
+  late final staff = local(() => _staff);
+  String get staffName => staff().name;
+
+  /// actualy store in db
+  Staff? get() => staffs.where((staff) => staff.id == _staff.id).firstOrNull;
+
+  @override
+  void initState() {
+    super.initState();
+    print(get());
+    print(staff());
   }
 
-  final editing = staffsRepository.editing;
+  @override
+  void dispose() {
+    staff.dispose();
+    super.dispose();
+  }
+
   void toggleEditing() => editing(!editing());
 
-  void delete() {
-    staffsRepository.remove(staff().id);
+  void remove(int id) {
+    staffsRepository.remove(id);
     navigator.back();
   }
 
   void save() {
-    staff(staff());
     staffsRepository.put(staff());
   }
 
-  String getStaffHours(int id) => '';
   bool get hasChanges {
-    final actual = staffsRepository.get(staff().id);
-    final current = staff();
-    return actual?.name != current.name;
+    return get()?.name != staff().name;
+  }
+
+  void onNameChanged(String value) {
+    staff(staff()..name = value);
   }
 }
 
-class StaffPage extends UI with StaffBloc {
+class StaffPage extends UI<StaffBloc> {
   @override
-  Widget build(BuildContext context) {
+  StaffBloc create() => StaffBloc(staff);
+
+  final Staff staff;
+
+  const StaffPage({
+    super.key,
+    required this.staff,
+  });
+
+  @override
+  Widget build(context) {
     return FScaffold(
-      header: FHeader.nested(
-        prefixActions: [
+      header: FHeader(
+        title: context.staffName.text(),
+        suffixes: [
           FButton.icon(
-            onPress: navigator.back,
-            child: FIcon(FAssets.icons.arrowLeft),
-          ),
-        ],
-        suffixActions: [
-          FButton.icon(
-            onPress: toggleEditing,
-            style: FButtonStyle.primary,
-            child: FIcon(
-              editing() ? FAssets.icons.penOff : FAssets.icons.pen,
+            onPress: context.toggleEditing,
+            style: FButtonStyle.primary(),
+            child: Icon(
+              context.editing() ? FIcons.penOff : FIcons.pen,
             ),
           ),
           FButton.icon(
-            onPress: delete,
-            style: FButtonStyle.destructive,
-            child: FIcon(FAssets.icons.delete),
+            onPress: () => context.remove(staff.id),
+            style: FButtonStyle.destructive(),
+            child: Icon(FIcons.delete),
+          ),
+          FButton.icon(
+            onPress: navigator.back,
+            child: Icon(FIcons.arrowLeft),
           ),
         ],
-        title: staff().name.text(),
       ),
-      content: Column(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 8,
         children: [
-          editing()
-              ? FHeader(
-                  title: FTextField(
-                    initialValue: staff().name,
-                    onChange: (value) {
-                      staff(staff()..name = value);
-                    },
-                  ).pad(),
-                  actions: [
-                    FButton.icon(
-                      onPress: hasChanges ? save : null,
-                      child: FIcon(FAssets.icons.save),
-                    ),
-                  ],
-                )
-              : staff().name.text(textScaleFactor: 2),
+          FTextField(
+            initialText: context.staffName,
+            onChange: context.onNameChanged,
+          ),
+          FButton.icon(
+            onPress: context.hasChanges ? context.save : null,
+            child: Icon(FIcons.save),
+          ),
+          Text(
+            staff.name,
+            style: TextStyle(fontSize: 32),
+          ),
+          Text('entries'),
+          Text('rosters'),
         ],
       ),
     );

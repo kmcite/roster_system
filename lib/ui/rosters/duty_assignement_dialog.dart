@@ -4,16 +4,20 @@ import 'package:roster_system/main.dart';
 
 import '../../domain/api/staffs_repository.dart';
 
-mixin DutyAssignementBloc {
-  Iterable<Staff> get staffs => staffsRepository.getAll();
+class DutyAssignementBloc extends Bloc {
+  StaffsRepository staffsRepository = depend();
+  Iterable<Staff> get staffs => staffsRepository.staffs;
 }
 
-class DutyAssignementDialog extends UI with DutyAssignementBloc {
+class DutyAssignementDialog extends UI<DutyAssignementBloc> {
   const DutyAssignementDialog(this.entry);
+  @override
+  DutyAssignementBloc create() => DutyAssignementBloc();
+
   final RosterEntry entry;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(context) {
     return FDialog(
       title: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
@@ -28,22 +32,22 @@ class DutyAssignementDialog extends UI with DutyAssignementBloc {
       ),
       body: const Text('Select a staff to assign.'),
       actions: [
-        if (staffs.isEmpty)
+        if (context.staffs.isEmpty)
           FButton(
             onPress: null,
-            label: const Text('No staffs available'),
+            child: const Text('No staffs available'),
           )
         else
-          ...staffs.map(
+          ...context.staffs.map(
             (staff) {
               return FButton(
-                style: staff.id == entry.staff.targetId
-                    ? FButtonStyle.destructive
-                    : FButtonStyle.primary,
+                style: staff.id == entry.staff.target?.id
+                    ? FButtonStyle.destructive()
+                    : FButtonStyle.primary(),
                 onPress: () {
                   navigator.back(staff);
                 },
-                label: Text(staff.name),
+                child: Text(staff.name),
               );
             },
           ),

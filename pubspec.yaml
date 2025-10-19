@@ -6,8 +6,6 @@ version: 1.0.0+1
 environment:
   sdk: ^3.6.0
 dependencies:
-  states_rebuilder: ^6.4.0
-  forui: ^0.10.0+1
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.6
@@ -17,18 +15,14 @@ dependencies:
   path_provider: ^2.1.5
   flutter_native_splash: ^2.4.1
   path: ^1.9.0
-  manager:
-    path: ..//manager
-  freezed:
-  freezed_annotation:
   build_runner: ^2.4.15
-  json_serializable:
-  json_annotation:
-  objectbox: ^4.0.3
-  objectbox_generator: ^4.0.3
-  objectbox_flutter_libs: ^4.0.3
   faker: ^2.2.0
-  flutter_bloc: ^9.1.0
+  objectbox: ^4.3.0
+  objectbox_flutter_libs: ^4.3.0
+  objectbox_generator: ^4.3.0
+  hive_flutter: ^1.1.0
+  forui:
+  navigation_builder: ^0.0.4
 
 flutter:
   uses-material-design: true

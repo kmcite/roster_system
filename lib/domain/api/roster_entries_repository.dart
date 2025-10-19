@@ -1,6 +1,7 @@
-import 'package:roster_system/main.dart' show CRUD;
-import 'package:roster_system/domain/models/roster_entry.dart' show RosterEntry;
+import 'package:roster_system/domain/models/roster_entry.dart';
 
-class RosterEntriesRepository extends CRUD<RosterEntry> {}
+class RosterEntriesRepository {
+  void put(RosterEntry entry) {}
+}
 
-final rosterEntriesRepository = RosterEntriesRepository();
+// final rosterEntriesRepository = RosterEntriesRepository();
