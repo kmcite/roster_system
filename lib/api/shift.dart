@@ -1,17 +1,14 @@
-import '../../main.dart';
+import 'package:flutter/material.dart' show Widget, Colors, Icon;
+import 'package:forui_assets/forui_assets.dart';
 
-enum Shift {
-  morning,
-  evening,
-  night;
-}
+enum Shift { morning, evening, night }
 
 extension ShiftExtensions on Shift {
   String get code {
     return switch (this) {
-      Shift.morning => 'M',
-      Shift.evening => 'E',
-      Shift.night => 'N',
+      Shift.morning => 'MOR',
+      Shift.evening => 'EVE',
+      Shift.night => 'NIG',
     };
   }
 

@@ -14,77 +14,79 @@ import 'package:objectbox/internal.dart'
 import 'package:objectbox/objectbox.dart' as obx;
 import 'package:objectbox_flutter_libs/objectbox_flutter_libs.dart';
 
-import 'domain/models/roster.dart';
-import 'domain/models/roster_entry.dart';
-import 'domain/models/staff.dart';
+import 'api/roster.dart';
+import 'api/roster_entry.dart';
+import 'api/staff.dart';
 
 export 'package:objectbox/objectbox.dart'; // so that callers only have to import this file
 
 final _entities = <obx_int.ModelEntity>[
   obx_int.ModelEntity(
-    id: const obx_int.IdUid(1, 1942717848461982436),
+    id: const obx_int.IdUid(1, 7540842796055651286),
     name: 'Roster',
-    lastPropertyId: const obx_int.IdUid(2, 6342073088655595921),
+    lastPropertyId: const obx_int.IdUid(3, 2857851226390021434),
     flags: 0,
     properties: <obx_int.ModelProperty>[
       obx_int.ModelProperty(
-        id: const obx_int.IdUid(1, 2866656975397310840),
+        id: const obx_int.IdUid(1, 4772101182126897717),
         name: 'id',
         type: 6,
         flags: 1,
       ),
       obx_int.ModelProperty(
-        id: const obx_int.IdUid(2, 6342073088655595921),
+        id: const obx_int.IdUid(2, 6460608761450632091),
         name: 'name',
         type: 9,
         flags: 0,
       ),
     ],
-    relations: <obx_int.ModelRelation>[
-      obx_int.ModelRelation(
-        id: const obx_int.IdUid(1, 2155013242013135877),
+    relations: <obx_int.ModelRelation>[],
+    backlinks: <obx_int.ModelBacklink>[
+      obx_int.ModelBacklink(
         name: 'entries',
-        targetId: const obx_int.IdUid(2, 2876430499182088519),
+        srcEntity: 'RosterEntry',
+        srcField: 'roster',
       ),
     ],
-    backlinks: <obx_int.ModelBacklink>[],
   ),
   obx_int.ModelEntity(
-    id: const obx_int.IdUid(2, 2876430499182088519),
+    id: const obx_int.IdUid(2, 5723766078384951519),
     name: 'RosterEntry',
-    lastPropertyId: const obx_int.IdUid(5, 959551280587933953),
+    lastPropertyId: const obx_int.IdUid(5, 4230001909596544807),
     flags: 0,
     properties: <obx_int.ModelProperty>[
       obx_int.ModelProperty(
-        id: const obx_int.IdUid(1, 2052195899483580123),
+        id: const obx_int.IdUid(1, 2818579335993664369),
         name: 'id',
         type: 6,
         flags: 1,
       ),
       obx_int.ModelProperty(
-        id: const obx_int.IdUid(2, 8185419714635542642),
+        id: const obx_int.IdUid(2, 6238810817811438399),
         name: 'staffId',
         type: 11,
         flags: 520,
-        indexId: const obx_int.IdUid(1, 7029199041915926228),
+        indexId: const obx_int.IdUid(1, 6193306977712540784),
+        relationField: 'staff',
         relationTarget: 'Staff',
       ),
       obx_int.ModelProperty(
-        id: const obx_int.IdUid(3, 3061993828231997780),
+        id: const obx_int.IdUid(3, 849571395766961916),
         name: 'rosterId',
         type: 11,
         flags: 520,
-        indexId: const obx_int.IdUid(2, 5117409351042850555),
+        indexId: const obx_int.IdUid(2, 5392587141048745907),
+        relationField: 'roster',
         relationTarget: 'Roster',
       ),
       obx_int.ModelProperty(
-        id: const obx_int.IdUid(4, 4692406660353556217),
+        id: const obx_int.IdUid(4, 5220658077640719666),
         name: 'dayIndex',
         type: 6,
         flags: 0,
       ),
       obx_int.ModelProperty(
-        id: const obx_int.IdUid(5, 959551280587933953),
+        id: const obx_int.IdUid(5, 4230001909596544807),
         name: 'shiftIndex',
         type: 6,
         flags: 0,
@@ -94,37 +96,38 @@ final _entities = <obx_int.ModelEntity>[
     backlinks: <obx_int.ModelBacklink>[],
   ),
   obx_int.ModelEntity(
-    id: const obx_int.IdUid(3, 4681431800121737597),
+    id: const obx_int.IdUid(3, 5506412324147305593),
     name: 'Staff',
-    lastPropertyId: const obx_int.IdUid(2, 8982060947478129693),
+    lastPropertyId: const obx_int.IdUid(5, 957774454969089259),
     flags: 0,
     properties: <obx_int.ModelProperty>[
       obx_int.ModelProperty(
-        id: const obx_int.IdUid(1, 9214309302452550129),
+        id: const obx_int.IdUid(1, 1846884448081699000),
         name: 'id',
         type: 6,
         flags: 1,
       ),
       obx_int.ModelProperty(
-        id: const obx_int.IdUid(2, 8982060947478129693),
+        id: const obx_int.IdUid(2, 6252294267538570502),
         name: 'name',
         type: 9,
         flags: 0,
       ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(5, 957774454969089259),
+        name: 'dutyPlace',
+        type: 6,
+        flags: 0,
+      ),
     ],
-    relations: <obx_int.ModelRelation>[
-      obx_int.ModelRelation(
-        id: const obx_int.IdUid(2, 2656745297317336742),
+    relations: <obx_int.ModelRelation>[],
+    backlinks: <obx_int.ModelBacklink>[
+      obx_int.ModelBacklink(
         name: 'entries',
-        targetId: const obx_int.IdUid(2, 2876430499182088519),
-      ),
-      obx_int.ModelRelation(
-        id: const obx_int.IdUid(3, 5823325260232507524),
-        name: 'rosters',
-        targetId: const obx_int.IdUid(1, 1942717848461982436),
+        srcEntity: 'RosterEntry',
+        srcField: 'staff',
       ),
     ],
-    backlinks: <obx_int.ModelBacklink>[],
   ),
 ];
 
@@ -165,14 +168,23 @@ Future<obx.Store> openStore({
 /// [obx.Store.new].
 obx_int.ModelDefinition getObjectBoxModel() {
   final model = obx_int.ModelInfo(
+    // If this version is not found, it means that this file was generated
+    // with an older version of the ObjectBox Dart generator.
+    // Please regenerate this file with the current generator version.
+    // Typically, this is done with `dart run build_runner build`.
+    generatorVersion: obx_int.GeneratorVersion.v2025_12_16,
     entities: _entities,
-    lastEntityId: const obx_int.IdUid(3, 4681431800121737597),
-    lastIndexId: const obx_int.IdUid(2, 5117409351042850555),
-    lastRelationId: const obx_int.IdUid(3, 5823325260232507524),
+    lastEntityId: const obx_int.IdUid(3, 5506412324147305593),
+    lastIndexId: const obx_int.IdUid(2, 5392587141048745907),
+    lastRelationId: const obx_int.IdUid(0, 0),
     lastSequenceId: const obx_int.IdUid(0, 0),
     retiredEntityUids: const [],
     retiredIndexUids: const [],
-    retiredPropertyUids: const [],
+    retiredPropertyUids: const [
+      2857851226390021434,
+      3092040405581637789,
+      3386374681331428093,
+    ],
     retiredRelationUids: const [],
     modelVersion: 5,
     modelVersionParserMinimum: 5,
@@ -184,7 +196,11 @@ obx_int.ModelDefinition getObjectBoxModel() {
       model: _entities[0],
       toOneRelations: (Roster object) => [],
       toManyRelations: (Roster object) => {
-        obx_int.RelInfo<Roster>.toMany(1, object.id): object.entries,
+        obx_int.RelInfo<RosterEntry>.toOneBacklink(
+          3,
+          object.id,
+          (RosterEntry srcObject) => srcObject.roster,
+        ): object.entries,
       },
       getId: (Roster object) => object.id,
       setId: (Roster object, int id) {
@@ -192,7 +208,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
       },
       objectToFB: (Roster object, fb.Builder fbb) {
         final nameOffset = fbb.writeString(object.name);
-        fbb.startTable(3);
+        fbb.startTable(4);
         fbb.addInt64(0, object.id);
         fbb.addOffset(1, nameOffset);
         fbb.finish(fbb.endTable());
@@ -210,7 +226,11 @@ obx_int.ModelDefinition getObjectBoxModel() {
         obx_int.InternalToManyAccess.setRelInfo<Roster>(
           object.entries,
           store,
-          obx_int.RelInfo<Roster>.toMany(1, object.id),
+          obx_int.RelInfo<RosterEntry>.toOneBacklink(
+            3,
+            object.id,
+            (RosterEntry srcObject) => srcObject.roster,
+          ),
         );
         return object;
       },
@@ -272,8 +292,11 @@ obx_int.ModelDefinition getObjectBoxModel() {
       model: _entities[2],
       toOneRelations: (Staff object) => [],
       toManyRelations: (Staff object) => {
-        obx_int.RelInfo<Staff>.toMany(2, object.id): object.entries,
-        obx_int.RelInfo<Staff>.toMany(3, object.id): object.rosters,
+        obx_int.RelInfo<RosterEntry>.toOneBacklink(
+          2,
+          object.id,
+          (RosterEntry srcObject) => srcObject.staff,
+        ): object.entries,
       },
       getId: (Staff object) => object.id,
       setId: (Staff object, int id) {
@@ -281,9 +304,10 @@ obx_int.ModelDefinition getObjectBoxModel() {
       },
       objectToFB: (Staff object, fb.Builder fbb) {
         final nameOffset = fbb.writeString(object.name);
-        fbb.startTable(3);
+        fbb.startTable(6);
         fbb.addInt64(0, object.id);
         fbb.addOffset(1, nameOffset);
+        fbb.addInt64(4, object.dutyPlace);
         fbb.finish(fbb.endTable());
         return object.id;
       },
@@ -295,16 +319,20 @@ obx_int.ModelDefinition getObjectBoxModel() {
           ..id = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0)
           ..name = const fb.StringReader(
             asciiOptimization: true,
-          ).vTableGet(buffer, rootOffset, 6, '');
+          ).vTableGet(buffer, rootOffset, 6, '')
+          ..dutyPlace = const fb.Int64Reader().vTableGetNullable(
+            buffer,
+            rootOffset,
+            12,
+          );
         obx_int.InternalToManyAccess.setRelInfo<Staff>(
           object.entries,
           store,
-          obx_int.RelInfo<Staff>.toMany(2, object.id),
-        );
-        obx_int.InternalToManyAccess.setRelInfo<Staff>(
-          object.rosters,
-          store,
-          obx_int.RelInfo<Staff>.toMany(3, object.id),
+          obx_int.RelInfo<RosterEntry>.toOneBacklink(
+            2,
+            object.id,
+            (RosterEntry srcObject) => srcObject.staff,
+          ),
         );
         return object;
       },
@@ -327,8 +355,8 @@ class Roster_ {
   );
 
   /// see [Roster.entries]
-  static final entries = obx.QueryRelationToMany<Roster, RosterEntry>(
-    _entities[0].relations[0],
+  static final entries = obx.QueryBacklinkToMany<RosterEntry, Roster>(
+    RosterEntry_.roster,
   );
 }
 
@@ -370,13 +398,13 @@ class Staff_ {
     _entities[2].properties[1],
   );
 
-  /// see [Staff.entries]
-  static final entries = obx.QueryRelationToMany<Staff, RosterEntry>(
-    _entities[2].relations[0],
+  /// See [Staff.dutyPlace].
+  static final dutyPlace = obx.QueryIntegerProperty<Staff>(
+    _entities[2].properties[2],
   );
 
-  /// see [Staff.rosters]
-  static final rosters = obx.QueryRelationToMany<Staff, Roster>(
-    _entities[2].relations[1],
+  /// see [Staff.entries]
+  static final entries = obx.QueryBacklinkToMany<RosterEntry, Staff>(
+    RosterEntry_.staff,
   );
 }

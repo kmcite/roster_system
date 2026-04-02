@@ -1,73 +1,66 @@
-// export 'package:manager/manager.dart';
+import 'dart:async';
 
-export 'package:forui/forui.dart';
-export 'package:roster_system/utils/navigator.dart';
-export 'package:roster_system/utils/extensions.dart';
-
-export 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart'
+    show FlutterNativeSplash;
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:roster_system/domain/api/rosters_repository.dart';
-import 'package:roster_system/domain/api/settings_repository.dart';
-import 'package:roster_system/domain/api/staffs_repository.dart';
-import 'package:roster_system/objectbox.g.dart' hide Box;
-export 'package:roster_system/utils/architecture.dart';
+import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart'
+    show getApplicationDocumentsDirectory;
+import 'package:roster_system/api/database.dart';
+import 'package:roster_system/api/navigation.dart';
+import 'package:roster_system/features/application_shell.dart';
 
-import 'main.dart';
+import 'objectbox.g.dart' show openStore;
 
-export 'dart:async';
-export 'package:flutter_native_splash/flutter_native_splash.dart';
-export 'package:roster_system/ui/dashboard/dashboard.dart';
-
-void main() {
+void main() async {
   FlutterNativeSplash.preserve(
     widgetsBinding: WidgetsFlutterBinding.ensureInitialized(),
   );
-  AppRunner(
-    initialize: () async {
-      final path = await getApplicationDocumentsDirectory();
-      serve<Store>(await openStore(directory: path.path));
-      await Hive.initFlutter();
-      serve<Box>(await Hive.openBox('roster_system'));
-
-      depend(SettingsRepository());
-      depend(StaffsRepository());
-      depend(RostersRepository());
-    },
-    app: Application(),
+  final path = await getApplicationDocumentsDirectory();
+  await Hive.initFlutter();
+  hive = await Hive.openBox('roster_system');
+  objects = await openStore(
+    directory: join(path.path, 'roster_system'),
   );
+
+  runApp(App());
 }
 
-class ApplicationBloc extends Bloc {
+class App extends StatefulWidget {
+  const App({super.key});
+
+  @override
+  State<App> createState() => _AppState();
+}
+
+class _AppState extends State<App> {
+  StreamSubscription? _darkSubscription;
   @override
   void initState() {
     super.initState();
     FlutterNativeSplash.remove();
+    _darkSubscription = dark.watch().listen((event) {
+      if (mounted) setState(() {});
+    });
   }
 
-  late SettingsRepository settingsRepository = depend();
-
-  late final dark = global(settingsRepository.dark);
-}
-
-class Application extends UI<ApplicationBloc> {
   @override
-  ApplicationBloc create() => ApplicationBloc();
+  void dispose() {
+    _darkSubscription?.cancel();
+    _darkSubscription = null;
+    super.dispose();
+  }
 
   @override
-  Widget build(controller) {
+  Widget build(context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      navigatorKey: navigator.key,
-      home: DashboardPage(),
-      themeMode: controller.dark() ? ThemeMode.dark : ThemeMode.light,
-      builder: (context, child) => FTheme(
-        data: switch (controller.dark()) {
-          true => FThemes.yellow.dark,
-          false => FThemes.yellow.light,
-        },
-        child: child!,
-      ),
+      navigatorKey: navigator,
+      home: ApplicationShell(),
+      theme: ThemeData.light(),
+      darkTheme: ThemeData.dark(),
+      themeMode: dark() ? ThemeMode.dark : ThemeMode.light,
     );
   }
 }

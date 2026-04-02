@@ -4,64 +4,58 @@
   "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
   "entities": [
     {
-      "id": "1:1942717848461982436",
-      "lastPropertyId": "2:6342073088655595921",
+      "id": "1:7540842796055651286",
+      "lastPropertyId": "3:2857851226390021434",
       "name": "Roster",
       "properties": [
         {
-          "id": "1:2866656975397310840",
+          "id": "1:4772101182126897717",
           "name": "id",
           "type": 6,
           "flags": 1
         },
         {
-          "id": "2:6342073088655595921",
+          "id": "2:6460608761450632091",
           "name": "name",
           "type": 9
         }
       ],
-      "relations": [
-        {
-          "id": "1:2155013242013135877",
-          "name": "entries",
-          "targetId": "2:2876430499182088519"
-        }
-      ]
+      "relations": []
     },
     {
-      "id": "2:2876430499182088519",
-      "lastPropertyId": "5:959551280587933953",
+      "id": "2:5723766078384951519",
+      "lastPropertyId": "5:4230001909596544807",
       "name": "RosterEntry",
       "properties": [
         {
-          "id": "1:2052195899483580123",
+          "id": "1:2818579335993664369",
           "name": "id",
           "type": 6,
           "flags": 1
         },
         {
-          "id": "2:8185419714635542642",
+          "id": "2:6238810817811438399",
           "name": "staffId",
-          "indexId": "1:7029199041915926228",
+          "indexId": "1:6193306977712540784",
           "type": 11,
           "flags": 520,
           "relationTarget": "Staff"
         },
         {
-          "id": "3:3061993828231997780",
+          "id": "3:849571395766961916",
           "name": "rosterId",
-          "indexId": "2:5117409351042850555",
+          "indexId": "2:5392587141048745907",
           "type": 11,
           "flags": 520,
           "relationTarget": "Roster"
         },
         {
-          "id": "4:4692406660353556217",
+          "id": "4:5220658077640719666",
           "name": "dayIndex",
           "type": 6
         },
         {
-          "id": "5:959551280587933953",
+          "id": "5:4230001909596544807",
           "name": "shiftIndex",
           "type": 6
         }
@@ -69,45 +63,43 @@
       "relations": []
     },
     {
-      "id": "3:4681431800121737597",
-      "lastPropertyId": "2:8982060947478129693",
+      "id": "3:5506412324147305593",
+      "lastPropertyId": "5:957774454969089259",
       "name": "Staff",
       "properties": [
         {
-          "id": "1:9214309302452550129",
+          "id": "1:1846884448081699000",
           "name": "id",
           "type": 6,
           "flags": 1
         },
         {
-          "id": "2:8982060947478129693",
+          "id": "2:6252294267538570502",
           "name": "name",
           "type": 9
-        }
-      ],
-      "relations": [
-        {
-          "id": "2:2656745297317336742",
-          "name": "entries",
-          "targetId": "2:2876430499182088519"
         },
         {
-          "id": "3:5823325260232507524",
-          "name": "rosters",
-          "targetId": "1:1942717848461982436"
+          "id": "5:957774454969089259",
+          "name": "dutyPlace",
+          "type": 6
         }
-      ]
+      ],
+      "relations": []
     }
   ],
-  "lastEntityId": "3:4681431800121737597",
-  "lastIndexId": "2:5117409351042850555",
-  "lastRelationId": "3:5823325260232507524",
+  "lastEntityId": "3:5506412324147305593",
+  "lastIndexId": "2:5392587141048745907",
+  "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
   "modelVersion": 5,
   "modelVersionParserMinimum": 5,
   "retiredEntityUids": [],
   "retiredIndexUids": [],
-  "retiredPropertyUids": [],
+  "retiredPropertyUids": [
+    2857851226390021434,
+    3092040405581637789,
+    3386374681331428093
+  ],
   "retiredRelationUids": [],
   "version": 1
 }

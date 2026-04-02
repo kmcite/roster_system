@@ -4,25 +4,28 @@ publish_to: "none"
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.6.0
+  sdk: ^3.10.3
 dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.6
   colornames:
-  package_info_plus: ^8.0.0
+  package_info_plus: ^9.0.0
   uuid: ^4.4.0
   path_provider: ^2.1.5
   flutter_native_splash: ^2.4.1
   path: ^1.9.0
-  build_runner: ^2.4.15
   faker: ^2.2.0
-  objectbox: ^4.3.0
-  objectbox_flutter_libs: ^4.3.0
-  objectbox_generator: ^4.3.0
   hive_flutter: ^1.1.0
-  forui:
-  navigation_builder: ^0.0.4
+  redux: ^5.0.0
+  flutter_redux: ^0.10.0
+  objectbox: ^5.2.0
+  objectbox_flutter_libs: ^5.2.0
+  forui_assets: ^0.20.0
 
+dev_dependencies:
+  flutter_lints: ^6.0.0
+  build_runner: ^2.4.15
+  objectbox_generator: ^5.2.0
 flutter:
   uses-material-design: true
