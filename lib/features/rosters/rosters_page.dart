@@ -110,11 +110,6 @@ class _RostersPageState extends State<RostersPage> {
                           color: Theme.of(context).colorScheme.outline,
                         ),
                       ),
-                      FilledButton.icon(
-                        onPressed: () => navigateToDialog(NewRosterDialog()),
-                        icon: Icon(FIcons.plus),
-                        label: Text('Create Your First Roster'),
-                      ),
                     ],
                   ),
                 ),

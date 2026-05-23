@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:hive_flutter/hive_flutter.dart' show Box;
 import 'package:objectbox/objectbox.dart' show Store;
 import 'package:roster_system/api/roster.dart';
@@ -18,12 +19,16 @@ String? read(String key) {
 
 late Store objects;
 
-class Crud<T> {
+class Crud<T> with ChangeNotifier {
   final box = objects.box<T>();
+  StreamSubscription<dynamic>? _subscription;
+  Crud() {
+    _subscription = watch().listen((_) => notifyListeners());
+  }
 
   /// MUTATIONS
   void put(T any) => objects.box<T>().put(any);
-  void remove(int id) => objects.box<T>().remove(id);
+  bool remove(int id) => objects.box<T>().remove(id);
   void removeAll() => objects.box<T>().removeAll();
 
   /// ONE-TIME READS
@@ -36,9 +41,16 @@ class Crud<T> {
   /// REACTIVE APIs
   Stream<List<T>> watch() =>
       box.query().watch(triggerImmediately: true).map((event) => event.find());
-  Stream<T> watchById(int id) => watch().map(
-    (event) => event.firstWhere((dynamic test) => test.id == id),
+  Stream<T?> watchById(int id) => watch().map(
+    (event) => event.where((dynamic test) => test.id == id).firstOrNull,
   );
+
+  @override
+  void dispose() {
+    _subscription?.cancel();
+    _subscription = null;
+    super.dispose();
+  }
 }
 
 final rosters = Crud<Roster>();

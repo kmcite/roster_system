@@ -1,12 +1,43 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:forui_assets/forui_assets.dart';
 import 'package:roster_system/api/database.dart';
 import 'package:roster_system/api/navigation.dart';
+import 'package:roster_system/api/roster.dart';
+import 'package:roster_system/api/staff.dart';
 import 'package:roster_system/features/staffs/new_staff_dialog.dart';
 import 'package:roster_system/features/staffs/staff_page.dart';
 
-class StaffsPage extends StatelessWidget {
+class StaffsPage extends StatefulWidget {
   const StaffsPage({super.key});
+
+  @override
+  State<StaffsPage> createState() => _StaffsPageState();
+}
+
+class _StaffsPageState extends State<StaffsPage> {
+  StreamSubscription<List<Staff>>? _staffs;
+  StreamSubscription<List<Roster>>? _rosters;
+  @override
+  void initState() {
+    super.initState();
+    _staffs = staffs.watch().listen((_) {
+      if (mounted) setState(() {});
+    });
+    _rosters = rosters.watch().listen((_) {
+      if (mounted) setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    _rosters?.cancel();
+    _staffs?.cancel();
+    _rosters = null;
+    _staffs = null;
+    super.dispose();
+  }
 
   @override
   Widget build(context) {
@@ -102,11 +133,6 @@ class StaffsPage extends StatelessWidget {
                         style: Theme.of(context).textTheme.titleLarge?.copyWith(
                           color: Theme.of(context).colorScheme.outline,
                         ),
-                      ),
-                      FilledButton.icon(
-                        onPressed: () => navigateToDialog(NewStaffDialog()),
-                        icon: Icon(FIcons.plus),
-                        label: Text('Add Your First Staff'),
                       ),
                     ],
                   ),

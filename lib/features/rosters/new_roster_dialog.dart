@@ -12,11 +12,16 @@ class NewRosterDialog extends StatefulWidget {
 }
 
 class _NewRosterDialogState extends State<NewRosterDialog> {
-  final nameController = TextEditingController();
-  @override
-  void dispose() {
-    nameController.dispose();
-    super.dispose();
+  String rosterName = '';
+  void onNameChanged(String name) {
+    setState(() => rosterName = name);
+  }
+
+  void onRosterCreated() {
+    final roster = Roster()..name = rosterName;
+    roster.generateEntries();
+    rosters.put(roster);
+    navigateBack();
   }
 
   @override
@@ -38,33 +43,23 @@ class _NewRosterDialogState extends State<NewRosterDialog> {
               decoration: InputDecoration(
                 labelText: 'Roster Name',
                 hintText: 'Enter roster name',
-                prefixIcon: Icon(FIcons.edit),
+                // prefixIcon: Icon(FIcons.edit),
                 border: OutlineInputBorder(),
               ),
-              controller: nameController,
+              initialValue: rosterName,
+              onChanged: onNameChanged,
             ),
           ],
         ),
       ),
       actions: [
-        TextButton.icon(
-          onPressed: () {
-            navigateBack();
-          },
-          icon: Icon(FIcons.x),
-          label: Text('Cancel'),
+        FilledButton(
+          onPressed: navigateBack,
+          child: Text('Cancel'),
         ),
-        FilledButton.icon(
-          onPressed: nameController.text.isEmpty
-              ? null
-              : () {
-                  final roster = Roster()..name = nameController.text;
-                  roster.generateEntries();
-                  rosters.put(roster);
-                  navigateBack();
-                },
-          icon: Icon(FIcons.check),
-          label: Text('Create Roster'),
+        FilledButton(
+          onPressed: rosterName.isEmpty ? null : onRosterCreated,
+          child: Text('Create Roster'),
         ),
       ],
     );
