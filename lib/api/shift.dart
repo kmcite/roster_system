@@ -4,6 +4,14 @@ import 'package:forui_assets/forui_assets.dart';
 enum Shift { morning, evening, night }
 
 extension ShiftExtensions on Shift {
+  String get displayName {
+    return switch (this) {
+      Shift.morning => 'Morning',
+      Shift.evening => 'Evening',
+      Shift.night => 'Night',
+    };
+  }
+
   String get code {
     return switch (this) {
       Shift.morning => 'MOR',
@@ -14,9 +22,9 @@ extension ShiftExtensions on Shift {
 
   Widget get icon {
     return switch (this) {
-      Shift.morning => Icon(FIcons.sun, color: Colors.yellow),
-      Shift.evening => Icon(FIcons.cloudSun, color: Colors.deepOrange),
-      Shift.night => Icon(FIcons.moon, color: Colors.indigo),
+      Shift.morning => Icon(FLucideIcons.sun, color: Colors.yellow),
+      Shift.evening => Icon(FLucideIcons.cloudSun, color: Colors.deepOrange),
+      Shift.night => Icon(FLucideIcons.moon, color: Colors.indigo),
     };
   }
 

@@ -1,66 +1,70 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart'
-    show FlutterNativeSplash;
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart'
     show getApplicationDocumentsDirectory;
-import 'package:roster_system/api/database.dart';
-import 'package:roster_system/api/navigation.dart';
-import 'package:roster_system/features/application_shell.dart';
+import 'package:provider/provider.dart';
+import 'package:roster_system/notifiers/roster_list_notifier.dart';
+import 'package:roster_system/notifiers/shell_notifier.dart';
+import 'package:roster_system/notifiers/staff_list_notifier.dart';
+import 'package:roster_system/notifiers/theme_notifier.dart';
+import 'package:roster_system/objectbox.g.dart' show openStore;
+import 'package:roster_system/services/duty_status_service.dart';
+import 'package:roster_system/services/objectbox_service.dart';
+import 'package:roster_system/services/preferences_service.dart';
+import 'package:roster_system/ui/application_shell.dart';
+import 'package:roster_system/ui/glass/glass_theme.dart';
 
-import 'objectbox.g.dart' show openStore;
-
-void main() async {
-  FlutterNativeSplash.preserve(
-    widgetsBinding: WidgetsFlutterBinding.ensureInitialized(),
-  );
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   final path = await getApplicationDocumentsDirectory();
   await Hive.initFlutter();
-  hive = await Hive.openBox('roster_system');
-  objects = await openStore(
+  final store = await openStore(
     directory: join(path.path, 'roster_system'),
   );
+  final hiveBox = await Hive.openBox('roster_system');
 
-  runApp(App());
+  final objectBox = ObjectBoxService(store);
+  final preferences = PreferencesService(hiveBox);
+
+  runApp(
+    MultiProvider(
+      providers: [
+        Provider<ObjectBoxService>.value(value: objectBox),
+        Provider<DutyStatusService>(
+          create: (context) => DutyStatusService(context.read<ObjectBoxService>()),
+        ),
+        Provider<PreferencesService>.value(value: preferences),
+        ChangeNotifierProvider(
+          create: (_) => ThemeNotifier(preferences),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => ShellNotifier(preferences),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => StaffListNotifier(context.read<ObjectBoxService>()),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => RosterListNotifier(context.read<ObjectBoxService>()),
+        ),
+      ],
+      child: const App(),
+    ),
+  );
 }
 
-class App extends StatefulWidget {
+class App extends StatelessWidget {
   const App({super.key});
 
   @override
-  State<App> createState() => _AppState();
-}
-
-class _AppState extends State<App> {
-  StreamSubscription? _darkSubscription;
-  @override
-  void initState() {
-    super.initState();
-    FlutterNativeSplash.remove();
-    _darkSubscription = dark.watch().listen((event) {
-      if (mounted) setState(() {});
-    });
-  }
-
-  @override
-  void dispose() {
-    _darkSubscription?.cancel();
-    _darkSubscription = null;
-    super.dispose();
-  }
-
-  @override
-  Widget build(context) {
+  Widget build(BuildContext context) {
+    final isDark = context.watch<ThemeNotifier>().isDark;
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      navigatorKey: navigator,
-      home: ApplicationShell(),
-      theme: ThemeData.light(),
-      darkTheme: ThemeData.dark(),
-      themeMode: dark() ? ThemeMode.dark : ThemeMode.light,
+      home: const ApplicationShell(),
+      theme: AppGlassTheme.material(isDark: false),
+      darkTheme: AppGlassTheme.material(isDark: true),
+      themeMode: isDark ? ThemeMode.dark : ThemeMode.light,
     );
   }
 }

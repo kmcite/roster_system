@@ -17,38 +17,14 @@ enum Day {
     .saturday => 'SAT',
     .sunday => 'SUN',
   };
+
+  String get shortLabel => switch (this) {
+    .monday => 'Mon',
+    .tuesday => 'Tue',
+    .wednesday => 'Wed',
+    .thursday => 'Thu',
+    .friday => 'Fri',
+    .saturday => 'Sat',
+    .sunday => 'Sun',
+  };
 }
-
-// sealed class Day {
-//   String get code;
-// }
-
-// class Monday extends Day {
-//   @override
-//   String get code => 'M';
-// }
-
-// class Tuesday extends Day {
-//   @override
-//   String get code => 'W';
-// }
-
-// class Friday extends Day {
-//   @override
-//   String get code => 'F';
-// }
-
-// class Thursday extends Day {
-//   @override
-//   String get code => 'T';
-// }
-
-// class Saturday extends Day {
-//   @override
-//   String get code => 'S';
-// }
-
-// class Sunday extends Day {
-//   @override
-//   String get code => 'S';
-// }

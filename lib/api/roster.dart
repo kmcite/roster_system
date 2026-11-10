@@ -1,12 +1,16 @@
 import 'package:objectbox/objectbox.dart';
-import 'package:roster_system/api/roster_entry.dart';
 import 'package:roster_system/api/day.dart';
+import 'package:roster_system/api/roster_entry.dart';
 import 'package:roster_system/api/shift.dart';
+import 'package:roster_system/domain/schedule_grid.dart';
 
 @Entity()
 class Roster {
   int id = 0;
   String name = '';
+
+  DateTime startDate = DateTime.now();
+  DateTime? effectiveTill;
 
   @Backlink('roster')
   final entries = ToMany<RosterEntry>();
@@ -15,7 +19,7 @@ class Roster {
 extension RosterX on Roster {
   Roster generateEntries() {
     final existingCount = entries.length;
-    final expectedCount = Day.values.length * Shift.values.length;
+    final expectedCount = ScheduleGrid.totalSlots;
 
     if (existingCount < expectedCount) {
       for (var day in Day.values) {
@@ -55,7 +59,7 @@ extension RosterX on Roster {
   }
 
   void validateEntries() {
-    final expectedCount = Day.values.length * Shift.values.length;
+    final expectedCount = ScheduleGrid.totalSlots;
     if (entries.length != expectedCount) {
       throw Exception(
         'Invalid number of entries (${entries.length}, expected $expectedCount) for roster: $name, id: $id',
